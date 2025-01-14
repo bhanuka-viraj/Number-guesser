@@ -4,18 +4,55 @@ import StartGameScreen from "./screens/StartGameScreen";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import GameScreen from "./screens/GameScreen";
+import GameOverScreen from "./screens/GameOverScreen";
 import Colors from "./constants/Colors";
+import { useFonts } from "expo-font";
+import AppLoading from "expo-app-loading";
 
 export default function App() {
   const [userNumber, setUserNumber] = useState();
+  const [gameIsOver, setGameIsOVer] = useState(true);
+  const [guessRounds, setGuessRounds] = useState(0);
+
+  const [fontsLoaded] = useFonts({
+    "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
+    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+  });
+
   function pickedNumberhandler(pickedNumber) {
     setUserNumber(pickedNumber);
+    setGameIsOVer(false);
   }
 
   let screen = <StartGameScreen onPickNumber={pickedNumberhandler} />;
 
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
+  function GameOverHandler() {
+    setGameIsOVer(true);
+  }
+
+  function OnRestartHandler() {
+    setGuessRounds(0);
+    setUserNumber(null);
+  }
+
   if (userNumber) {
-    screen = <GameScreen />;
+    screen = (
+      <GameScreen userNumber={userNumber} onGameOver={GameOverHandler} />
+    );
+  }
+
+  if (gameIsOver && userNumber) {
+    screen = (
+      <GameOverScreen
+        userNumber={userNumber}
+        roundsNumber={guessRounds}
+        onRestart={OnRestartHandler}
+      />
+    );
   }
 
   return (
