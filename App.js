@@ -30,18 +30,19 @@ export default function App() {
     return <AppLoading />;
   }
 
-  function GameOverHandler() {
+  function gameOverHandler(numberOfRounds) {
     setGameIsOVer(true);
+    setGuessRounds(numberOfRounds);
   }
 
-  function OnRestartHandler() {
+  function onRestartHandler() {
     setGuessRounds(0);
     setUserNumber(null);
   }
 
   if (userNumber) {
     screen = (
-      <GameScreen userNumber={userNumber} onGameOver={GameOverHandler} />
+      <GameScreen userNumber={userNumber} onGameOver={gameOverHandler} />
     );
   }
 
@@ -50,7 +51,7 @@ export default function App() {
       <GameOverScreen
         userNumber={userNumber}
         roundsNumber={guessRounds}
-        onRestart={OnRestartHandler}
+        onRestart={onRestartHandler}
       />
     );
   }
